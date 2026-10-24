@@ -1,0 +1,53 @@
+# Build the dbt docs site (models, tests, lineage graph) from the test fixtures and publish it
+# to GitHub Pages.
+name: dbt docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - name: Build warehouse from fixtures
+        env:
+          WEATHER_DB_PATH: ${{ github.workspace }}/docs-build.duckdb
+          WEATHERPIPE_LANDING_DIR: ${{ github.workspace }}/tests/fixtures/landing
+        run: |
+          weatherpipe load
+          cd dbt
+          dbt seed --profiles-dir .
+          dbt build --profiles-dir . --vars '{baseline_start_year: 2019, baseline_end_year: 2020}'
+          dbt docs generate --static --profiles-dir .
+          mkdir -p ../site && cp target/static_index.html ../site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

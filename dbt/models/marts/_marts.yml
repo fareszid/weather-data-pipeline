@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: dim_cities
+    description: Tracked cities with location, climate classification and data coverage.
+    columns:
+      - name: city_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: days_loaded
+        description: Days of data loaded; null means the city is in the seed but not extracted yet.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: fct_daily_weather
+    description: >
+      Fact table, one row per city and day (incremental). Grain: city_id x weather_date.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [city_id, weather_date]
+    columns:
+      - name: city_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_cities')
+                field: city_id
+      - name: weather_date
+        data_tests: [not_null]
+
+  - name: mart_climate_normals
+    description: >
+      Climate normals per city and calendar month over the baseline period
+      (vars baseline_start_year..baseline_end_year), plus the 90th percentile of daily Tmax
+      used as the local heatwave threshold.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [city_id, month]
+    columns:
+      - name: month
+        data_tests:
+          - value_between: {arguments: {min_value: 1, max_value: 12}}
+      - name: temp_max_p90_c
+        data_tests: [not_null]
+
+  - name: mart_monthly_anomalies
+    description: Monthly temperature and precipitation compared with the normal for that month.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [city_id, month_start]
+    columns:
+      - name: temp_anomaly_c
+        description: Monthly mean temperature minus the 1991-2020 normal (°C).
+        data_tests:
+          - not_null
+          - value_between: {arguments: {min_value: -15, max_value: 15}}
+
+  - name: mart_annual_summary
+    description: Annual climate indicators per city, anomaly vs. baseline and warmth rank.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [city_id, year]
+    columns:
+      - name: hot_days
+        data_tests:
+          - value_between: {arguments: {min_value: 0, max_value: 366}}
+
+  - name: mart_heatwaves
+    description: >
+      Heatwave events: at least var('heatwave_min_days') consecutive days with Tmax above the
+      city's 1991-2020 90th percentile for that calendar month.
+    columns:
+      - name: heatwave_id
+        data_tests: [unique, not_null]
+      - name: duration_days
+        data_tests:
+          - value_between: {arguments: {min_value: 3, max_value: 366}}
+
+  - name: mart_warming_trends
+    description: Per-city linear warming trend (°C per decade) and last-10-years vs. baseline.
+    columns:
+      - name: city_id
+        data_tests: [unique, not_null]

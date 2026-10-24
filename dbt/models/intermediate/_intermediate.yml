@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: int_daily_weather_enriched
+    description: >
+      Daily weather with calendar parts, WMO weather group and climate-index flags:
+      hot day (Tmax >= 30 °C), tropical night (Tmin >= 20 °C), frost day (Tmin < 0 °C),
+      wet day (precipitation >= 1 mm).
+    columns:
+      - name: weather_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Clear, Cloudy, Fog, Drizzle, Rain, Snow, Thunderstorm, Unknown]
+
+  - name: int_monthly_weather
+    description: Monthly aggregates per city; is_complete_month is false for the running month.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [city_id, year, month]

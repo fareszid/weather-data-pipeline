@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: open_meteo
+    description: Raw daily weather loaded by the Python extract/load step (weatherpipe).
+    schema: raw
+    tables:
+      - name: daily_weather
+        description: One row per city and day, exactly as returned by the Open-Meteo archive API.
+        config:
+          loaded_at_field: loaded_at
+          freshness:
+            warn_after: {count: 10, period: day}
+            error_after: {count: 30, period: day}
+        columns:
+          - name: city_id
+            data_tests: [not_null]
+          - name: date
+            data_tests: [not_null]
+      - name: load_audit
+        description: One row per landing file loaded, with row counts.

@@ -1,0 +1,7 @@
+version: 2
+
+seeds:
+  - name: cities
+    description: >
+      Cities tracked by the pipeline. The Python extractor reads this file too, so a new row
+      here is enough to start collecting a city.

@@ -1,0 +1,10 @@
+city_id,city,country,continent,latitude,longitude,timezone,koppen_climate
+london,London,United Kingdom,Europe,51.5072,-0.1276,Europe/London,Cfb - temperate oceanic
+paris,Paris,France,Europe,48.8566,2.3522,Europe/Paris,Cfb - temperate oceanic
+madrid,Madrid,Spain,Europe,40.4168,-3.7038,Europe/Madrid,Csa - hot-summer Mediterranean
+new_york,New York,United States,North America,40.7128,-74.0060,America/New_York,Cfa - humid subtropical
+tokyo,Tokyo,Japan,Asia,35.6762,139.6503,Asia/Tokyo,Cfa - humid subtropical
+sydney,Sydney,Australia,Oceania,-33.8688,151.2093,Australia/Sydney,Cfa - humid subtropical
+cairo,Cairo,Egypt,Africa,30.0444,31.2357,Africa/Cairo,BWh - hot desert
+dubai,Dubai,United Arab Emirates,Asia,25.2048,55.2708,Asia/Dubai,BWh - hot desert
+mumbai,Mumbai,India,Asia,19.0760,72.8777,Asia/Kolkata,Am - tropical monsoon
