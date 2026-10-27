@@ -1,6 +1,6 @@
 # Climate ELT Pipeline
 
-[![CI](https://github.com/Fares2311/weather-data-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Fares2311/weather-data-pipeline/actions/workflows/ci.yml)
+[![CI](https://github.com/fareszid/weather-data-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/fareszid/weather-data-pipeline/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -9,7 +9,7 @@ How much warmer are world cities today than during the 1991-2020 climate normal?
 This pipeline pulls daily weather for 9 cities since 1991 from the Open-Meteo API into a
 file-based landing zone, loads it into DuckDB, models and tests it with dbt, and shows the
 results in a Streamlit dashboard. The dbt documentation and lineage graph are published at
-**[fares2311.github.io/weather-data-pipeline](https://fares2311.github.io/weather-data-pipeline/)**.
+**[fareszid.github.io/weather-data-pipeline](https://fareszid.github.io/weather-data-pipeline/)**.
 
 **Findings** (1991 to October 2026, 117,666 city-days): every city is warming. Cairo leads at
 **+0.77 °C per decade**, then Madrid (+0.64) and Tokyo (+0.55). The average city now spends
@@ -98,7 +98,7 @@ on Streamlit Community Cloud.
 ## Run it
 
 ```bash
-git clone https://github.com/Fares2311/weather-data-pipeline.git
+git clone https://github.com/fareszid/weather-data-pipeline.git
 cd weather-data-pipeline
 python -m venv .venv && source .venv/bin/activate
 make install          # pip install -e ".[dashboard,dev]"
